@@ -46,7 +46,6 @@ class MainActivity : AppCompatActivity() {
         val cliente = ClienteEntity(0, nombre, apellidos);
         val clienteDao = database.clienteDao()
 
-        //En el disppatcher IO es para entradas y salidas: bases de datos, ficheros, redes...
         CoroutineScope(Dispatchers.IO).launch {
             clienteDao.insert(cliente)
         }
@@ -63,15 +62,12 @@ class MainActivity : AppCompatActivity() {
 
     fun loadData(adapter: ArrayAdapter<String>) {
         val datos = ArrayList<String>()
-        //En el disppatcher IO es para entradas y salidas: bases de datos, ficheros, redes...
         CoroutineScope(Dispatchers.IO).launch {
             val clienteDao = database.clienteDao()
             val clientes = clienteDao.getAll()
             clientes.forEach { cliente ->
                 datos.add("Nombre ${cliente.nombre} y apellidos ${cliente.apellidos}")
             }
-            //Lo siguiente, que es un actualización de la vista, lo ejecutamos en el hilo principal
-            //Cambiamos el contexto
             withContext(Dispatchers.Main) {
                 adapter.addAll(datos)
                 adapter.notifyDataSetChanged()
